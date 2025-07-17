@@ -41,7 +41,7 @@ public class UsuarioService {
     }
 
     public UsuarioDTO buscarUsuarioPorCPF(String cpf) {
-        UsuarioModel usuarioModel = iUsuarioRepository.findByUser(cpf)
+        UsuarioModel usuarioModel = iUsuarioRepository.findByCpf(cpf)
                 .orElseThrow(() -> new RecursoNaoEncontrado("Usuário não encontrado pelo CPF: " + cpf));
         return mapToDTO(usuarioModel);
     }
@@ -75,7 +75,7 @@ public class UsuarioService {
         usuarioModel.setCpf(usuarioDTO.getCpf());
         usuarioModel.setEmail(usuarioDTO.getEmail());
         usuarioModel.setSexo(usuarioDTO.getSexo());
-        usuarioModel.setTelefone(usuarioModel.getTelefone());
+        usuarioModel.setTelefone(usuarioDTO.getTelefone());
         return usuarioModel;
     }
 
