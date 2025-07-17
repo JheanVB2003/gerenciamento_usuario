@@ -1,7 +1,7 @@
 package com.sigeps.test.register_user.service;
 
 import com.sigeps.test.register_user.dto.UsuarioDTO;
-import com.sigeps.test.register_user.exception.RecursoNaoEncontrado;
+import com.sigeps.test.register_user.exception.UsuarioNaoEncontrado;
 import com.sigeps.test.register_user.model.UsuarioModel;
 import com.sigeps.test.register_user.repository.IUsuarioRepository;
 
@@ -36,13 +36,13 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioDTO buscarUsuarioPorId(Long id) {
         UsuarioModel usuarioModel = iUsuarioRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontrado("Usuário não encontrado com ID: " + id));
+                .orElseThrow(UsuarioNaoEncontrado::new);
         return mapToDTO(usuarioModel);
     }
 
     public UsuarioDTO buscarUsuarioPorCPF(String cpf) {
         UsuarioModel usuarioModel = iUsuarioRepository.findByCpf(cpf)
-                .orElseThrow(() -> new RecursoNaoEncontrado("Usuário não encontrado pelo CPF: " + cpf));
+                .orElseThrow(UsuarioNaoEncontrado::new);
         return mapToDTO(usuarioModel);
     }
 

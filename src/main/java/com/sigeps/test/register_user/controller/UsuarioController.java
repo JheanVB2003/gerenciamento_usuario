@@ -24,8 +24,10 @@ public class UsuarioController {
 
     @PostMapping("/cadastro")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO){
-        UsuarioDTO novoUsuario = usuarioService.cadastrarUsuario(usuarioDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+
+            UsuarioDTO novoUsuario = usuarioService.cadastrarUsuario(usuarioDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+
     }
 
     @GetMapping({"","/"})
@@ -38,6 +40,12 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> buscarUsuarioByID(@PathVariable Long id){
        UsuarioDTO usuario = usuarioService.buscarUsuarioPorId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(usuario);
+    }
+
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<UsuarioDTO> buscarUsuarioByCpf(@PathVariable String cpf){
+        UsuarioDTO usuario = usuarioService.buscarUsuarioPorCPF(cpf);
         return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
 
