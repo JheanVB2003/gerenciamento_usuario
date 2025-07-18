@@ -1,11 +1,12 @@
 package com.sigeps.test.register_user.exception;
 
-public class ConflitoDadosException extends RuntimeException {
-    public ConflitoDadosException(String message) {
+public class CpfExistenteException extends RuntimeException {
+
+    public CpfExistenteException(){
+        super("Este CPF já está cadastrado no sistema!");
+    }
+    public CpfExistenteException(String message) {
         super(message);
     }
 
-    public ConflitoDadosException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

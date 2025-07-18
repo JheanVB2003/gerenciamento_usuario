@@ -1,12 +1,13 @@
 package com.sigeps.test.register_user.service;
 
 import com.sigeps.test.register_user.dto.UsuarioDTO;
+import com.sigeps.test.register_user.exception.CpfExistenteException;
+import com.sigeps.test.register_user.exception.EmailExistenteException;
 import com.sigeps.test.register_user.exception.UsuarioNaoEncontrado;
+import com.sigeps.test.register_user.infra.GlobalExceptionHandler;
 import com.sigeps.test.register_user.model.UsuarioModel;
 import com.sigeps.test.register_user.repository.IUsuarioRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,13 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDTO){
-        if (iUsuarioRepository.existsByCpf(usuarioDTO.getCpf())){
-            throw new ExpressionException("CPF " +usuarioDTO.getCpf() + " já cadastrado");
+    public UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDTO) {
+        if (iUsuarioRepository.existsByCpf(usuarioDTO.getCpf()) && (iUsuarioRepository.existsByEmail(usuarioDTO.getEmail()))){
+            throw new RuntimeException("CPF e EMAIL já cadastrados no sistema!");
+        } else if ((iUsuarioRepository.existsByCpf(usuarioDTO.getCpf()))){
+            throw new CpfExistenteException();
+        }else if((iUsuarioRepository.existsByEmail(usuarioDTO.getEmail()))){
+            throw new EmailExistenteException();
         }
 
         UsuarioModel usuarioModel = mapToModel(usuarioDTO);
@@ -40,6 +45,7 @@ public class UsuarioService {
         return mapToDTO(usuarioModel);
     }
 
+    @Transactional(readOnly = true)
     public UsuarioDTO buscarUsuarioPorCPF(String cpf) {
         UsuarioModel usuarioModel = iUsuarioRepository.findByCpf(cpf)
                 .orElseThrow(UsuarioNaoEncontrado::new);
@@ -55,7 +61,7 @@ public class UsuarioService {
 
     private UsuarioDTO mapToDTO(UsuarioModel usuarioModel) {
         UsuarioDTO userdto = new UsuarioDTO();
-        userdto.setId(usuarioModel.getId());
+
         userdto.setNome(usuarioModel.getNome());
         userdto.setCpf(usuarioModel.getCpf());
         userdto.setEmail(usuarioModel.getEmail());

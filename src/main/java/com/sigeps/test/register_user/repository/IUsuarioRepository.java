@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface IUsuarioRepository extends JpaRepository<UsuarioModel, Long> {
     Optional<UsuarioModel> findByCpf(String cpf);
     boolean existsByCpf(String cpf); // Para verificar se o cpf já existe
+    boolean existsByEmail(String email); // Para verificar se o cpf já existe
 }
