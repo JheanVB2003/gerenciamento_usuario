@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 public class UsuarioDTO {
 
-    private Long id;
+
     private String nome;
 
     @CPF
@@ -17,21 +17,12 @@ public class UsuarioDTO {
     public UsuarioDTO() {
     }
 
-    public UsuarioDTO(Long id, String nome, String cpf, String email, Sexo sexo, String telefone) {
-        this.id = id;
+    public UsuarioDTO(String nome, String cpf, String email, Sexo sexo, String telefone) {
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
         this.sexo = sexo;
         this.telefone = telefone;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getNome() {
