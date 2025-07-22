@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,9 +60,35 @@ public class UsuarioService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public UsuarioDTO atualizarPessoa(Long id, UsuarioDTO usuarioDTO){
+       UsuarioModel usuarioModelExistente = iUsuarioRepository.findById(id)
+               .orElseThrow(UsuarioNaoEncontrado::new);
+
+
+        usuarioModelExistente.setNome(usuarioDTO.getNome());
+        usuarioModelExistente.setCpf(usuarioDTO.getCpf());
+        usuarioModelExistente.setEmail(usuarioDTO.getEmail());
+        usuarioModelExistente.setSexo(usuarioDTO.getSexo());
+        usuarioModelExistente.setTelefone(usuarioDTO.getTelefone());
+
+        usuarioModelExistente = iUsuarioRepository.save(usuarioModelExistente);
+        usuarioDTO = mapToDTO(usuarioModelExistente);
+        return usuarioDTO;
+    }
+
+    @Transactional
+    public  void deletarUsuario(Long id){
+        if (!iUsuarioRepository.existsById(id)){
+            throw new UsuarioNaoEncontrado("Pessoa com ID " + id + " não encontrada para exclusão.");
+        }
+        iUsuarioRepository.deleteById(id);
+    }
+
     private UsuarioDTO mapToDTO(UsuarioModel usuarioModel) {
         UsuarioDTO userdto = new UsuarioDTO();
 
+        userdto.setId(usuarioModel.getId());
         userdto.setNome(usuarioModel.getNome());
         userdto.setCpf(usuarioModel.getCpf());
         userdto.setEmail(usuarioModel.getEmail());
