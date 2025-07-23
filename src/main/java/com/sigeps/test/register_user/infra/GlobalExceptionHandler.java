@@ -1,9 +1,10 @@
 package com.sigeps.test.register_user.infra;
 
 import com.sigeps.test.register_user.exception.CpfExistenteException;
+import com.sigeps.test.register_user.exception.CpfInvalido;
 import com.sigeps.test.register_user.exception.EmailExistenteException;
 import com.sigeps.test.register_user.exception.UsuarioNaoEncontrado;
-import org.springframework.http.HttpStatus;
+ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,9 +17,7 @@ import java.util.List;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-
-
-        @ExceptionHandler (Exception.class)
+       @ExceptionHandler (Exception.class)
         public ResponseEntity<ApiError> erroGenerico (Exception exception){
             ApiError apiError = ApiError
                     .builder()
@@ -68,7 +67,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
         }
 
-
-
+        @ExceptionHandler(CpfInvalido.class)
+        public ResponseEntity<ApiError> cpfInvalido (CpfInvalido cpfInvalido){
+            ApiError apiError = ApiError
+                    .builder()
+                    .timestamp(LocalDateTime.now())
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .status(HttpStatus.BAD_REQUEST.name())
+                    .errors(List.of(cpfInvalido.getMessage()))
+                    .build();
+            return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        }
 
 }

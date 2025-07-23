@@ -1,14 +1,11 @@
 package com.sigeps.test.register_user.dto;
 
 import com.sigeps.test.register_user.model.Sexo;
-import org.hibernate.validator.constraints.br.CPF;
 
 public class UsuarioDTO {
 
     private Long id;
     private String nome;
-
-    @CPF
     private String cpf;
     private String email;
     private Sexo sexo;
