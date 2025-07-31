@@ -1,16 +1,23 @@
 package com.sigeps.test.register_user.model;
 
+import com.sigeps.test.register_user.enums.Perfil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "pessoas")
+@Table(name = "tb_usuario")
+@Data
+@NoArgsConstructor
 public class UsuarioModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @NotBlank(message = "O NOME é obrigatório")
@@ -34,63 +41,52 @@ public class UsuarioModel {
     @Column(nullable = false)
     private String telefone;
 
-    public UsuarioModel() {
-    }
+    @Column(nullable = false)
+    private Perfil perfil;
 
-    public UsuarioModel(Long id, String nome, String cpf, String email, Sexo sexo, String telefone) {
-        this.id = id;
+    @Column(nullable = false)
+    private String senha;
+
+    @Column(nullable = false)
+    private Boolean ativo;
+
+    private LocalDateTime dataCadastro;
+    private LocalDateTime dataAtualizacao;
+
+    public UsuarioModel(String nome, String cpf, String email, Sexo sexo, String telefone, String senha, Perfil perfil) {
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
         this.sexo = sexo;
         this.telefone = telefone;
+        this.senha = senha;
+        this.perfil = perfil;
+        this.ativo = true;
+        this.dataCadastro = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
+    public void alterarPerfil(Perfil perfil) {
+        this.perfil = perfil;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void alterarSenha(String senha){
+        this.senha = senha;
     }
 
-    public String getNome() {
-        return nome;
+    public void ativarUsuario(){
+        this.ativo = true;
     }
 
-    public void setNome(String nome) {
+    public void inativarUsuario(){
+        this.ativo = false;
+    }
+
+    public void atualizarDados(String nome, String cpf, String email, Sexo sexo, String telefone) {
         this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
         this.cpf = cpf;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Sexo getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(Sexo sexo) {
         this.sexo = sexo;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
         this.telefone = telefone;
+        this.dataAtualizacao = LocalDateTime.now();
     }
 }
