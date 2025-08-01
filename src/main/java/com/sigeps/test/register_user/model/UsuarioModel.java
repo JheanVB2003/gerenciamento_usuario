@@ -1,6 +1,7 @@
 package com.sigeps.test.register_user.model;
 
 import com.sigeps.test.register_user.enums.Perfil;
+import com.sigeps.test.register_user.enums.Sexo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -41,6 +42,7 @@ public class UsuarioModel {
     @Column(nullable = false)
     private String telefone;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Perfil perfil;
 
