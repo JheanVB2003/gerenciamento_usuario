@@ -1,6 +1,9 @@
 package com.sigeps.test.register_user.service;
 
+import com.sigeps.test.register_user.dto.AunthenticationDTO;
+import com.sigeps.test.register_user.dto.LoginResponseDTO;
 import com.sigeps.test.register_user.dto.UsuarioDTO;
+import com.sigeps.test.register_user.enums.Perfil;
 import com.sigeps.test.register_user.exception.CpfExistenteException;
 import com.sigeps.test.register_user.exception.EmailExistenteException;
 import com.sigeps.test.register_user.exception.UsuarioNaoEncontrado;
@@ -8,6 +11,12 @@ import com.sigeps.test.register_user.infra.GlobalExceptionHandler;
 import com.sigeps.test.register_user.model.UsuarioModel;
 import com.sigeps.test.register_user.repository.IUsuarioRepository;
 
+import com.sigeps.test.register_user.security.TokenService;
+import com.sigeps.test.register_user.security.UsuarioDetails;
+import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,22 +24,32 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.sigeps.test.register_user.enums.Perfil.ROLE_ADMIN;
+
 @Service
+@AllArgsConstructor
 public class UsuarioService {
 
-    public final IUsuarioRepository iUsuarioRepository;
+    private final IUsuarioRepository iUsuarioRepository;
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
 
-    public UsuarioService(IUsuarioRepository iUsuarioRepository){
-        this.iUsuarioRepository = iUsuarioRepository;
+    public LoginResponseDTO login(AunthenticationDTO data) {
+
+        var userNamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
+        var auth = authenticationManager.authenticate(userNamePassword);
+        var token = tokenService.generateToken((UsuarioDetails) auth.getPrincipal());
+
+        return new LoginResponseDTO(token);
     }
 
     @Transactional
     public UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDTO) {
-        if (iUsuarioRepository.existsByCpf(usuarioDTO.getCpf()) && (iUsuarioRepository.existsByEmail(usuarioDTO.getEmail()))){
+        if (iUsuarioRepository.existsByCpf(usuarioDTO.cpf()) && (iUsuarioRepository.existsByEmail(usuarioDTO.email()))){
             throw new RuntimeException("CPF e EMAIL já cadastrados no sistema!");
-        } else if ((iUsuarioRepository.existsByCpf(usuarioDTO.getCpf()))){
+        } else if ((iUsuarioRepository.existsByCpf(usuarioDTO.cpf()))){
             throw new CpfExistenteException();
-        }else if((iUsuarioRepository.existsByEmail(usuarioDTO.getEmail()))){
+        }else if((iUsuarioRepository.existsByEmail(usuarioDTO.email()))){
             throw new EmailExistenteException();
         }
 
@@ -62,19 +81,20 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioDTO atualizarPessoa(Long id, UsuarioDTO usuarioDTO){
-       UsuarioModel usuarioModelExistente = iUsuarioRepository.findById(id)
+
+        UsuarioModel usuarioModelExistente = iUsuarioRepository.findById(id)
                .orElseThrow(UsuarioNaoEncontrado::new);
 
 
-        usuarioModelExistente.setNome(usuarioDTO.getNome());
-        usuarioModelExistente.setCpf(usuarioDTO.getCpf());
-        usuarioModelExistente.setEmail(usuarioDTO.getEmail());
-        usuarioModelExistente.setSexo(usuarioDTO.getSexo());
-        usuarioModelExistente.setTelefone(usuarioDTO.getTelefone());
+        usuarioModelExistente.setNome(usuarioDTO.nome());
+        usuarioModelExistente.setCpf(usuarioDTO.cpf());
+        usuarioModelExistente.setEmail(usuarioDTO.email());
+        usuarioModelExistente.setSexo(usuarioDTO.sexo());
+        usuarioModelExistente.setTelefone(usuarioDTO.telefone());
 
         usuarioModelExistente = iUsuarioRepository.save(usuarioModelExistente);
-        usuarioDTO = mapToDTO(usuarioModelExistente);
-        return usuarioDTO;
+
+        return mapToDTO(usuarioModelExistente);
     }
 
     @Transactional
@@ -86,30 +106,25 @@ public class UsuarioService {
     }
 
     private UsuarioDTO mapToDTO(UsuarioModel usuarioModel) {
-        UsuarioDTO userdto = new UsuarioDTO();
-
-        userdto.setId(usuarioModel.getId());
-        userdto.setNome(usuarioModel.getNome());
-        userdto.setCpf(usuarioModel.getCpf());
-        userdto.setEmail(usuarioModel.getEmail());
-        userdto.setSexo(usuarioModel.getSexo());
-        userdto.setTelefone(usuarioModel.getTelefone());
-
-        return userdto;
+        return new UsuarioDTO(
+                usuarioModel.getNome(),
+                usuarioModel.getCpf(),
+                usuarioModel.getEmail(),
+                usuarioModel.getSexo(),
+                usuarioModel.getTelefone(),
+                usuarioModel.getSenha()
+        );
     }
 
-    private UsuarioModel mapToModel(UsuarioDTO usuarioDTO){
-        UsuarioModel usuarioModel = new UsuarioModel();
-
-       // if (usuarioDTO.getId() != null){
-       //     usuarioModel.setId(usuarioDTO.getId());
-      //  }
-        usuarioModel.setNome(usuarioDTO.getNome());
-        usuarioModel.setCpf(usuarioDTO.getCpf());
-        usuarioModel.setEmail(usuarioDTO.getEmail());
-        usuarioModel.setSexo(usuarioDTO.getSexo());
-        usuarioModel.setTelefone(usuarioDTO.getTelefone());
-        return usuarioModel;
+    private UsuarioModel mapToModel(UsuarioDTO data){
+       return new UsuarioModel(
+                data.nome(),
+                data.cpf(),
+                data.email(),
+                data.sexo(),
+                data.telefone(),
+                new BCryptPasswordEncoder().encode(data.senha())
+        );
     }
 
 

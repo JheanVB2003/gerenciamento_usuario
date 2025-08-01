@@ -55,14 +55,14 @@ public class UsuarioModel {
     private LocalDateTime dataCadastro;
     private LocalDateTime dataAtualizacao;
 
-    public UsuarioModel(String nome, String cpf, String email, Sexo sexo, String telefone, String senha, Perfil perfil) {
+    public UsuarioModel(String nome, String cpf, String email, Sexo sexo, String telefone, String senha) {
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
         this.sexo = sexo;
         this.telefone = telefone;
         this.senha = senha;
-        this.perfil = perfil;
+        this.perfil = Perfil.ROLE_ADMIN;
         this.ativo = true;
         this.dataCadastro = LocalDateTime.now();
     }

@@ -1,8 +1,11 @@
 package com.sigeps.test.register_user.controller;
 
+import com.sigeps.test.register_user.dto.AunthenticationDTO;
+import com.sigeps.test.register_user.dto.LoginResponseDTO;
 import com.sigeps.test.register_user.dto.UsuarioDTO;
 import com.sigeps.test.register_user.service.UsuarioService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,16 +14,17 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/api/usuario")
+@AllArgsConstructor
 public class UsuarioController {
 
-    public final UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService){
-        this.usuarioService = usuarioService;
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AunthenticationDTO data){
+        LoginResponseDTO token = usuarioService.login(data);
+        return ResponseEntity.ok().body(token);
     }
-
 
     @PostMapping("/cadastro")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO){
