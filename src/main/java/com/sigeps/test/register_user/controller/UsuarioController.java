@@ -1,5 +1,7 @@
 package com.sigeps.test.register_user.controller;
 
+import com.sigeps.test.register_user.dto.AunthenticationDTO;
+import com.sigeps.test.register_user.dto.LoginResponseDTO;
 import com.sigeps.test.register_user.dto.UsuarioDTO;
 import com.sigeps.test.register_user.model.UsuarioModel;
 import com.sigeps.test.register_user.service.UsuarioService;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,24 +21,28 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/api/usuario")
+@AllArgsConstructor
 public class UsuarioController {
 
-    public final UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService){
-        this.usuarioService = usuarioService;
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AunthenticationDTO data){
+        LoginResponseDTO token = usuarioService.login(data);
+        return ResponseEntity.ok().body(token);
     }
 
 
-    @Operation(summary = "Cria um novo usuário", description = "Adiciona um novo usuário ao sistema")
+
+   /* @Operation(summary = "Cria um novo usuário", description = "Adiciona um novo usuário ao sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Usuário CRIADO com SUCESSO!",
                 content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = UsuarioDTO.class))),
             @ApiResponse(responseCode = "400", description = "Requisição inválida!")
-    })
+    })*/
+
     @PostMapping("/cadastro")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO){
 

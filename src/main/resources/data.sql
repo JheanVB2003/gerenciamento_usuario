@@ -1,16 +1,20 @@
 -- Remove registros anteriores
-DELETE FROM PESSOAS;
+DELETE FROM TB_USUARIO;
 
--- Inserção de 10 usuários
-INSERT INTO PESSOAS (nome, cpf, email, telefone, sexo)
+-- Usuário Admin
+INSERT INTO tb_usuario (nome, cpf, email, sexo, telefone, perfil, senha, ativo, data_cadastro, data_atualizacao)
 VALUES
-('João da Silva','123.456.789-00', 'joao.silva@email.com','(11) 91234-5678', 'MASCULINO'),
-('Maria Oliveira','987.654.321-00', 'maria.oliveira@email.com', '(21) 92345-6789', 'FEMININO'),
-('Carlos Souza','456.789.123-00', 'carlos.souza@email.com', '(31) 93456-7890', 'MASCULINO'),
-('Ana Paula Santos','321.654.987-00', 'ana.santos@email.com','(41) 94567-8901', 'FEMININO'),
-('Pedro Henrique Lima','159.753.486-20', 'pedro.lima@email.com','(51) 95678-9012', 'MASCULINO'),
-('Juliana Costa','258.369.147-80', 'juliana.costa@email.com','(61) 96789-0123', 'FEMININO'),
-('Ricardo Almeida','741.852.963-10', 'ricardo.almeida@email.com','(71) 97890-1234', 'MASCULINO'),
-('Fernanda Ribeiro','852.741.369-20', 'fernanda.ribeiro@email.com','(81) 98901-2345', 'FEMININO'),
-('Lucas Martins','369.258.147-00', 'lucas.martins@email.com',  '(91) 99012-3456', 'MASCULINO'),
-('Camila Fernandes','147.258.369-90', 'camila.fernandes@email.com','(85) 90123-4567', 'FEMININO');
+('Admin do Sistema', '00000000000', 'admin@sistema.com', 'MASCULINO', '11999990000', 'ROLE_ADMIN', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL);
+
+-- Usuários comuns
+INSERT INTO tb_usuario (nome, cpf, email, sexo, telefone, perfil, senha, ativo, data_cadastro, data_atualizacao)
+VALUES
+('Ana Oliveira', '12345678901', 'ana.oliveira@email.com', 'FEMININO', '11987654321', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL),
+('Bruno Costa', '23456789012', 'bruno.costa@email.com', 'MASCULINO', '11983456278', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL),
+('Carla Souza', '34567890123', 'carla.souza@email.com', 'FEMININO', '11981234567', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL),
+('Diego Lima', '45678901234', 'diego.lima@email.com', 'MASCULINO', '11982345678', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL),
+('Eduarda Mendes', '56789012345', 'eduarda.mendes@email.com', 'FEMININO', '11984567890', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL),
+('Felipe Rocha', '67890123456', 'felipe.rocha@email.com', 'MASCULINO', '11981239876', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL),
+('Gabriela Martins', '78901234567', 'gabriela.martins@email.com', 'FEMININO', '11980987654', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL),
+('Henrique Silva', '89012345678', 'henrique.silva@email.com', 'MASCULINO', '11988776655', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL),
+('Isabela Nunes', '90123456789', 'isabela.nunes@email.com', 'FEMININO', '11986655443', 'ROLE_USER', '$2a$10$ueVVA1jO54AXReSWW/azhO9MfctOXBQyOIwwcHoey6XxTTDt5dt.K', true, CURRENT_TIMESTAMP, NULL);
